@@ -58,7 +58,7 @@ int main(void) {
 
     Player player;
     player.position = (Vector2) { screenWidth / 2.0f, screenHeight / 2.0f };
-    player.speed = 4.0f;
+    player.speed = 2.0f;
     player.radius = 20;
 
     AlertIndicator indicator;
