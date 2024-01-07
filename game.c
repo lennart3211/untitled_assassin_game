@@ -3,8 +3,8 @@
 #include <stdio.h>
 
 #define NUM_WALLS 5
-#define MAP_WIDTH  2240
-#define MAP_HEIGHT 1087
+#define MAP_WIDTH  3508
+#define MAP_HEIGHT 2480
 
 const float VIS_RADIUS = 500.0f;
 
@@ -69,7 +69,7 @@ int main(void) {
     indicator.alertLevel = 1;
 
     mapTexture = LoadTexture("./image/hannibal.png");
-    fogTexture = LoadTexture("./image/mini_map.png");
+    fogTexture = LoadTexture("./image/game_map.png");
     Shader shader = LoadShader(0, "./shader/fog.glsl");
 
     int playerPosLoc = GetShaderLocation(shader, "playerPos");
