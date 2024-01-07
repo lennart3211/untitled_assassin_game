@@ -68,7 +68,7 @@ int main(void) {
     indicator.width = 200;
     indicator.alertLevel = 1;
 
-    mapTexture = LoadTexture("./image/hannibal.png");
+    mapTexture = LoadTexture("./image/game_actual.png");
     fogTexture = LoadTexture("./image/game_map.png");
     Shader shader = LoadShader(0, "./shader/fog.glsl");
 
