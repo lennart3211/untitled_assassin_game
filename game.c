@@ -5,6 +5,9 @@
 #define NUM_WALLS 5
 #define MAP_WIDTH  3508
 #define MAP_HEIGHT 2480
+#define ZOOM_IN 1.0f
+#define ZOOM_OUT 4.0f
+#define ZOOM_COOLDOWN 500
 
 const float VIS_RADIUS = 500.0f;
 
@@ -24,6 +27,7 @@ typedef struct {
     Vector2 position;
     float speed;
     int radius;
+    int isZoomedIn;
 } Player;
 
 Rectangle map[NUM_WALLS] = {
@@ -54,12 +58,15 @@ int main(void) {
     const int screenWidth = 1920;
     const int screenHeight = 1080;
 
-    InitWindow(screenWidth, screenHeight, "Raylib Top-Down Game with Camera2D");
+    unsigned int lastZoomTime = 0;
+
+    InitWindow(screenWidth, screenHeight, "Untitled Assassin Game");
 
     Player player;
     player.position = (Vector2) { screenWidth / 2.0f, screenHeight / 2.0f };
     player.speed = 2.0f;
     player.radius = 20;
+    player.isZoomedIn = 1;
 
     AlertIndicator indicator;
     indicator.x = 20;
@@ -80,9 +87,10 @@ int main(void) {
     camera.target = player.position;
     camera.offset = (Vector2){ screenWidth / 2.0f, screenHeight / 2.0f };
     camera.rotation = 0.0f;
-    camera.zoom = 1.0f;
+    camera.zoom = ZOOM_IN;
 
-    SetTargetFPS(60); // Set the game to run at 60 frames-per-second
+    SetTargetFPS(60);
+    SetExitKey(KEY_L);
 
     while (!WindowShouldClose()) {
         Vector2 oldPosition = player.position;
@@ -91,8 +99,20 @@ int main(void) {
         if (IsKeyDown(KEY_D)) player.position.x += player.speed;
         if (IsKeyDown(KEY_W)) player.position.y -= player.speed;
         if (IsKeyDown(KEY_S)) player.position.y += player.speed;
-
-        if (isColliding(&player)) player.position = oldPosition;
+        
+        if (IsKeyPressed(KEY_M)) {
+            unsigned int currentTime = GetTime() * 1000;
+            if (currentTime - lastZoomTime >= ZOOM_COOLDOWN) {
+                if (player.isZoomedIn) {
+                    camera.zoom = ZOOM_OUT;
+                    player.isZoomedIn = 0;
+                } else {
+                    camera.zoom = ZOOM_IN;
+                    player.isZoomedIn = 1;
+                }
+                lastZoomTime = currentTime;
+            }
+        }
 
         camera.target = player.position;
 
@@ -119,7 +139,7 @@ int main(void) {
     UnloadShader(shader);
     UnloadTexture(mapTexture);
     UnloadTexture(fogTexture);
-    CloseWindow(); // Close window and OpenGL context
+    CloseWindow();
 
     return 0;
 }
